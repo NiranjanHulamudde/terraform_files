@@ -1,68 +1,79 @@
-# Terraform AWS Infrastructure Setup
+# Automated AWS EC2 Infrastructure with Terraform
 
-This repository contains the **Terraform** configuration files required to provision and manage a secure cloud infrastructure on **Amazon Web Services (AWS)**. It automates the deployment of an EC2 virtual machine utilizing a custom Amazon Machine Image (AMI).
+A production-ready, modular Terraform configuration to automatically provision a secure, public-facing Ubuntu Linux server on Amazon Web Services (AWS). This architecture dynamically looks up the latest official Ubuntu images and configures an isolated network firewall firewall to allow immediate SSH management.
 
-## 🚀 Infrastructure Components
+## 🏗️ Architecture Overview
 
-The configuration provisions the following core AWS resources:
-* **EC2 Instance**: A virtual machine initiated using the `ami-0b6d93d33ba97d99` image.
+The configuration deploys the following infrastructure assets into your AWS environment:
+* **Dynamic Data Source Lookup:** Automatically queries Canonical's official marketplace vault to fetch the absolute newest stable **Ubuntu 24.04 LTS** image at build-time.
+* **EC2 Virtual Server (`t2.micro`):** Launches a compute node deployed with your designated AWS SSH key pair signature injected at system boot.
+* **Network Security Group:** Operates as a stateful cloud firewall that opens incoming **Port 22 (SSH)** traffic from the public internet (`0.0.0.0/0`) while allowing full outbound access for package installations.
 
+## 📁 Project Directory Map
 
-## 🛠️ Prerequisites
-
-Ensure you have the following utilities configured before deployment:
-* **[Terraform CLI](https://developer.hashicorp.com/terraform/downloads)** (v1.5.0 or higher recommended)
-* **[AWS CLI](https://aws.amazon.com/cli/)** installed and authenticated via `aws configure`
-* Valid AWS credentials with permissions for IAM, EC2, and VPC creation
-
-## 📂 Repository Structure
+Organize your infrastructure files using the standard modular layout layout below:
 
 ```text
-├── main.tf          # Core resource definitions (EC2, VPC, Security Groups)
-└── README.md        # Project documentation
+├── providers.tf      # Declares version limits and targets cloud vendors
+├── variables.tf      # Input parameters (e.g., instance sizing, names)
+├── main.tf           # Primary resource blueprints (EC2, Security Groups)
+├── outputs.tf        # Runtime metrics returned to screen (Public IPs, ARNs)
+└── README.md         # Documentation roadmap (This file)
 ```
 
-## 💻 Getting Started
+## 🚀 Deployment Playbook
 
-Follow these operational steps to deploy the infrastructure:
+Follow these sequential steps to log into your account, preview the infrastructure changes, and apply them.
 
-### 1. Clone the Repository
+### Step 1: Initialize Your Environment Variables
+To keep your secret keys safe and out of public tracking repositories, inject your cloud authentication parameters locally into your terminal session space:
+
 ```bash
-git clone <your-repository-url>
-cd <repository-directory>
+export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+export AWS_DEFAULT_REGION="us-east-1"
 ```
+*(Alternatively, run `aws configure` to commit them globally to your home directory structure).*
 
-### 2. Initialize Terraform
-Download the required AWS provider plug-ins and set up the local backend state:
+### Step 2: Initialize Workspace Backends
+Download the necessary HashiCorp provider plugins required to translate your code into active AWS API operations:
 ```bash
 terraform init
 ```
 
-### 3. Review the Execution Plan
-Generate and inspect an execution plan to verify exactly what resources will be created or modified:
+### Step 3: Preview the Plan
+Run a simulation to verify the architectural blueprints before making any live changes to your AWS account balance:
 ```bash
 terraform plan
 ```
 
-### 4. Deploy Infrastructure
-Apply the configuration changes to build your infrastructure on AWS. Confirm the prompt by typing `yes`:
+### Step 4: Execute the Infrastructure Build
+Compile the configurations and instantiate the virtual resources in your cloud environment:
 ```bash
 terraform apply
 ```
+*When prompted by the utility framework, type `yes` and hit Enter.*
 
-### 5. Clean Up Resources
-To destroy all provisioned infrastructure and prevent ongoing AWS charges, run:
+---
+
+## 🔐 System Access (SSH Connect)
+
+Once the deployment finishes executing successfully, Terraform prints out the live target IP address. 
+
+1. Lock down the internal read permissions of your downloaded key file so your local shell engine accepts the cryptography:
+   ```bash
+   # On Linux/macOS systems
+   chmod 400 awskey.pem
+   ```
+
+2. Tunnel through the firewall straight into your server using the official built-in administrative account:
+   ```bash
+   ssh -i "awskey.pem" ubuntu@<YOUR_INSTANCE_PUBLIC_IP>
+   ```
+
+## 🧹 Deconstruction (Tear Down)
+To completely delete the server, dismantle the security group rules, and prevent unintended AWS subscription charges once testing is finished, run:
 ```bash
 terraform destroy
 ```
-
-## ⚙️ Configuration Variables
-
-| Variable Name | Description | Default Value |
-| :--- | :--- | :--- |
-| `aws_region` | The targeted AWS region for deployment | `us-east-1` |
-| `instance_type` | The computing hardware specifications of the instance | `t3.micro` |
-| `ami_id` | The Amazon Machine Image identifier used to launch EC2 | `ami-0b6d93d33ba97d99` |
-
----
-*Disclaimer: This configuration creates live resources on AWS which may incur financial costs. Ensure to run `terraform destroy` when testing is complete.*
+*Type `yes` to confirm permanent deconstruction.*
