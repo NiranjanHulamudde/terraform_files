@@ -15,6 +15,8 @@ resource "aws_instance" "app_server" {
 	ami 	= data.aws_ami.ubuntu.id
 	instance_type	= var.instance_type
 
+	key_name = "awskey"	# Tells aws to use these key for ssh authentication
+
 	tags = 	{
 	Name	= var.server_name
 }
