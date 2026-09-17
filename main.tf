@@ -6,7 +6,7 @@ data "aws_ami" "ubuntu" {
 		name	= "name"
 		values	= ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
 }
-	owners	= ["099720109477"]  # Your account id
+	owners	= ["099720109477"]  # Canonical id - paste as it is
 }
 
 # Create the virtual server using the variables previously assigned
